@@ -1,6 +1,7 @@
 'use client'
 import { About } from "@/components/about";
 import Description from "@/components/description";
+import { HomeAbout } from "@/components/homeAbout";
 import Info from "@/components/info";
 import LandingPage from "@/components/landingPage";
 
@@ -9,7 +10,8 @@ export default function HomePage(){
         <main>
             {/* <ReactLenis> */}
                 <LandingPage />
-                <Info/>
+                {/* <Info/> */}
+                <HomeAbout />
                 <Description />
                 <About />
             {/* </ReactLenis> */}

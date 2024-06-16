@@ -1,5 +1,13 @@
-'use client'
-import { MaskContainer } from "./ui/svg-mask-effect"
+'use client';
+
+import {
+    isConnected,
+    requestAccess,
+    signTransaction,
+} from "@stellar/freighter-api";
+
+import { useParams } from 'next/navigation';
+import { MaskContainer } from "@/components/ui/svg-mask-effect";
 import {
     Card,
     CardContent,
@@ -7,18 +15,54 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { xdr, } from "@stellar/stellar-sdk";
 
-export function MaskedDiv() {
+interface PayPageProps {
+    params: {
+        amount: string;
+        receiver: string;
+        key?: string;
+        sender?: string;
+    };
+}
+
+export default function PayPage({ params }: PayPageProps) {
+
+    const { amount, receiver, key, sender } = params
+
+    async function pay() {
+        if (await isConnected()) {
+            console.log("user has freighter")
+        }
+        else {
+            alert("no freighter installed")
+            return
+        }
+
+        try {
+            let publicKey = await requestAccess();
+        } catch (e) {
+            alert(e)
+        }
+
+        try {
+            const userSignedTransaction = await signTransaction(String(xdr))
+        } catch (e) {
+            alert(e)
+        }
+
+
+
+    }
+
     return (
-        <div className=" h-screen w-full flex items-center flex-col justify-center mx-8 overflow-hidden md:flex-row">
+        <div className="h-screen w-full flex items-center flex-col justify-center mx-8 overflow-hidden md:flex-row">
             <MaskContainer
                 revealText={
-                    <p className="max-w-4xl mx-auto text-white-800 text-center  text-4xl font-bold">
-                        A simplest way to send and receive funds. A simplest way to onboard users to web3
+                    <p className="max-w-4xl mx-auto text-white-800 text-center text-4xl font-bold">
+                        Successfully fetched the request.
                     </p>
                 }
                 className="h-[40rem] rounded-md"
@@ -30,24 +74,13 @@ export function MaskedDiv() {
 
             <Card className="w-[350px] mx-36">
                 <CardHeader>
-                    <CardTitle>Token Name</CardTitle>
-                    <CardDescription>Receiver Address</CardDescription>
+                    <CardTitle>Pay {amount}</CardTitle>
+                    <CardDescription>To {receiver}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <form>
-                        <div className="grid w-full items-center gap-4">
-                            <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="name">Payer address</Label>
-                                <Input id="name" placeholder="Wallet Address" />
-                            </div>
-                        </div>
-                    </form>
-                </CardContent>
-                <CardFooter className="flex justify-end">
-                    <Button>Pay</Button>
+                <CardFooter className="flex justify-center">
+                    <Button className=" flex w-52" onClick={() => pay()}>Pay</Button>
                 </CardFooter>
             </Card>
-
         </div>
     );
 }

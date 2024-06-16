@@ -16,7 +16,7 @@ export default function LandingPage() {
     return (
       <div  className='h-screen overflow-hidden'>
         <motion.div style={{y}} className='relative h-full'>
-            <span className=' text-black flex items-center justify-center h-96 text-[7vw] uppercase text-center leading-none px-8'>Onboarding</span>
+            <span className=' text-black flex items-center justify-center h-96 text-[7vw] uppercase text-center leading-none px-8'>XLM Links</span>
           <Image src={Background} fill alt="image" style={{objectFit: "cover", zIndex: -1}}/>
         </motion.div>
       </div>
