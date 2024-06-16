@@ -4,6 +4,7 @@ import "./globals.css";
 import { FloatingNavDemo } from "@/components/nav-bar";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 
@@ -25,7 +26,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <FloatingNavDemo />
           {children}
+          
          </body>
+         
     </html>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 import { MaskContainer } from "@/components/ui/about-svg-mask-effect";
+import Footer from "@/components/footer";
 
 export function About() {
   return (
@@ -16,8 +17,9 @@ export function About() {
         <br /> <br />
         <span className="text-red-500">Share it</span> to your friends<br /> <br />
         That's it, request made simple. they can <span className="text-red-500">pay</span> using that link
-
       </MaskContainer>
+
+      <Footer />
     </div>
   );
 }
