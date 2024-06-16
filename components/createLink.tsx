@@ -6,67 +6,60 @@ import { Label } from "@/components/ui/labelacc";
 import { Input } from "@/components/ui/inputacc";
 import { cn } from "@/utils/cn";
 
-import { isConnected,requestAccess } from "@stellar/freighter-api";
+import { isConnected, requestAccess } from "@stellar/freighter-api";
 
 export default function CreateLink() {
     const [address, setAddress] = useState("");
     const [amount, setAmount] = useState("");
-    const [link,setLink] = useState(null||"");
+    const [link, setLink] = useState(null || "");
+
     async function getPubkey() {
         if (await isConnected()) {
-            console.log("user has freighter")
-          }
-        else{
-            alert("no freighter installed")
-            return
+            console.log("user has freighter");
+        } else {
+            alert("no freighter installed");
+            return;
         }
 
-        const retrievePublicKey = async () => {
-            let publicKey = "";
-            let error = "";
-          
-            try {
-              publicKey = await requestAccess();
-            } catch (e) {
-              alert(e)
-            }
-          
-            if (error) {
-              alert("error")
-              return
-            }
-          
-            setAddress(publicKey)
-          };
-
-          retrievePublicKey();
+        try {
+            const publicKey = await requestAccess();
+            setAddress(publicKey);
+        } catch (e) {
+            alert(e);
+        }
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
+    const handleSubmit = async () => {
         const data = {
             address,
             amount: parseFloat(amount),
         };
 
         try {
-            const response = await axios.post('/api/links', data, {
+            const response = await axios.post('http://localhost:3000/pay/', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
 
             console.log('Success:', response.data);
-            setLink(String(response.data))
-
+            setLink(String(response.data));
         } catch (error) {
-            console.error('Error:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('Axios error:', error.response?.data || error.message);
+            } else {
+                console.error('Error:', error);
+            }
         }
     };
 
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        handleSubmit();
+    };
+
     return (
-        <div className="flex justify-center items-center h-screen ">
+        <div className="flex justify-center items-center h-screen">
             <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
                 <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
                     Create Links
@@ -75,9 +68,9 @@ export default function CreateLink() {
                     Simple steps to send funds.
                 </p>
 
-                <form className="my-8" onSubmit={handleSubmit}>
+                <form className="my-8" onSubmit={handleFormSubmit}>
                     <LabelInputContainer className="mb-4">
-                        <Label htmlFor="address">Receiver Address </Label>
+                        <Label htmlFor="address">Receiver Address</Label>
                         <Input
                             id="address"
                             placeholder="Wallet Address"
@@ -103,23 +96,23 @@ export default function CreateLink() {
                         type="submit"
                     >
                         Create Link &rarr;
-                        
                     </button>
                     <BottomGradient />
                     <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
                     <button
                         className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                         type="button"
-                        onClick={()=>getPubkey()}
+                        onClick={() => getPubkey()}
                     >
                         Get pubkey from freighter
-                        
                     </button>
                 </form>
 
-                {link && <div className="text-white flex items-center w-screen">
-                    {link}
-                </div> }
+                {link && (
+                    <div className="text-white flex items-center w-screen">
+                        {link}
+                    </div>
+                )}
             </div>
         </div>
     );
